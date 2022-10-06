@@ -1,0 +1,116 @@
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import Notiflix from 'notiflix';
+import { convertMs } from './02-convertMs';
+import { options } from './02-flatpickr.options';
+
+export const refs = {
+  input: document.querySelector('#datetime-picker'),
+  button: document.querySelector('[data-start]'),
+  days: document.querySelector('[data-days]'),
+  hours: document.querySelector('[data-hours]'),
+  minutes: document.querySelector('[data-minutes]'),
+  seconds: document.querySelector('[data-seconds]'),
+};
+
+refs.button.classList.add('button');
+refs.input.classList.add('input');
+refs.button.setAttribute('disabled', true);
+refs.button.addEventListener('click', () => timer.start());
+
+class Timer {
+  constructor({ onTick }) {
+    this.intervalId = null;
+    this.isActive = false;
+    this.onTick = onTick;
+  }
+
+  start() {
+    if (this.isActive) {
+      return;
+    }
+    this.isActive = true;
+    this.intervalId = setInterval(() => {
+      const deltaTime = new Date(refs.input.value) - new Date();
+      const time = convertMs(deltaTime);
+      this.onTick(time);
+    }, 1000);
+  }
+
+  stop() {
+    clearInterval(this.intervalId);
+    this.isActive = false;
+    Notiflix.Report.success(
+      'Super-Duper countdown timer',
+      'Sale has started!!! Hurry or be late!',
+      'Done!'
+    );
+  }
+}; 
+
+const timer = new Timer({onTick: updateClock});
+
+function updateClock({ days, hours, minutes, seconds }) {
+  refs.days.textContent = days;
+  refs.hours.textContent = hours;
+  refs.minutes.textContent = minutes;
+  refs.seconds.textContent = seconds;
+  if (days == 0 && hours == 0 && minutes == 0 && seconds == 0) {
+    timer.stop();
+  }
+};
+
+flatpickr(refs.input, options);
+
+
+
+
+
+
+
+
+
+
+
+// refs.button.addEventListener('click', onClickBtn);
+// let timerId = null;
+
+// function onClickBtn() {
+//     const timerId = setInterval(() => {
+//         let countdown = new Date(refs.input.value) - new Date();
+//         console.log(countdown);
+//         const { days, hours, minutes, seconds } = convertMs(countdown);
+//         console.log(`${days} : ${hours} : ${minutes} : ${seconds}`);
+//         refs.days.textContent = days;
+//         refs.hours.textContent = hours;
+//         refs.minutes.textContent = minutes;
+//         refs.seconds.textContent = seconds;
+//         refs.button.setAttribute('disabled', true);
+//         if (days == 0 && hours == 0 && minutes == 0 && seconds == 0 ) {
+//           clearInterval(timerId);
+//           Notiflix.Report.success(
+//             'Super-Duper countdown timer',
+//             'Sale has started!!! Hurry or be late!',
+//             'Done!'
+//           );
+//         }
+//     }, 1000);
+// };
+
+// const options = {
+//     enableTime: true,
+//     time_24hr: true,
+//     defaultDate: new Date(),
+//     minuteIncrement: 1,
+//     onClose(selectedDates) {
+//         if (selectedDates[0] < Date.now()) {
+//             Notiflix.Notify.warning('Please choose a date in the future');
+//             return
+//         }
+//         refs.button.removeAttribute('disabled');
+//     },
+// };
+
+// flatpickr(refs.input, options);
+
+
