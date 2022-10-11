@@ -2,7 +2,7 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import Notiflix from 'notiflix';
 
-export const refs = {
+const refs = {
   input: document.querySelector('#datetime-picker'),
   button: document.querySelector('[data-start]'),
   days: document.querySelector('[data-days]'),
@@ -42,7 +42,8 @@ class Timer {
             'Sale has started!!! Hurry or be late!',
             'Done!'
             );
-        }
+    }
+    
     convertMs(ms) {
         const second = 1000;
         const minute = second * 60;
@@ -56,6 +57,7 @@ class Timer {
         
         return { days, hours, minutes, seconds };
     }
+    
     addLeadingZero(value) {
         return String(value).padStart(2, '0');
     }
@@ -66,7 +68,7 @@ const timer = new Timer({onTick: updateClock});
 refs.button.addEventListener('click', timer.start.bind(timer));
     
 function updateClock({ days, hours, minutes, seconds }) {
-        refs.days.textContent = days;
+  refs.days.textContent = days;
   refs.hours.textContent = hours;
   refs.minutes.textContent = minutes;
   refs.seconds.textContent = seconds;
